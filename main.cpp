@@ -3,9 +3,13 @@
 #include "eval.hpp"
 #include "print.hpp"
 #include "type.hpp"
+#include "token.hpp"
 
 int main()
 {
+
+
+    /*
     Context cxt;
 
     {
@@ -178,6 +182,6 @@ int main()
         print(E);
         std::cout << " == " << eval(E) << "\n";
     }
-
+    */
     return 0;
 }
