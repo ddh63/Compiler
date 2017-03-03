@@ -18,7 +18,19 @@ Type* check(Context& cxt, Expr* e) {
             assert(check(cxt, e->gete2()) == &cxt.bool_type && "Expression 2 not of type bool");
             t = &cxt.bool_type;
         }
+        void visit(AndThen_expr* e) {
+            // Check if e1 and e2 are bool
+            assert(check(cxt, e->gete1()) == &cxt.bool_type && "Expression 1 not of type bool");
+            assert(check(cxt, e->gete2()) == &cxt.bool_type && "Expression 2 not of type bool");
+            t = &cxt.bool_type;
+        }
         void visit(Or_expr* e) {
+            // Check if e1 and e2 are bool
+            assert(check(cxt, e->gete1()) == &cxt.bool_type && "Expression 1 not of type bool");
+            assert(check(cxt, e->gete1()) == &cxt.bool_type && "Expression 2 not of type bool");
+            t = &cxt.bool_type;
+        }
+        void visit(OrElse_expr* e) {
             // Check if e1 and e2 are bool
             assert(check(cxt, e->gete1()) == &cxt.bool_type && "Expression 1 not of type bool");
             assert(check(cxt, e->gete1()) == &cxt.bool_type && "Expression 2 not of type bool");

@@ -8,7 +8,9 @@ int eval(Expr *e) {
 		int r;
 		void visit(Bool_expr *e) { r = e->getVal(); }
 		void visit(And_expr *e) { r = eval(e->gete1()) & eval(e->gete2()); }
+		void visit(AndThen_expr *e) { r = eval(e->gete1()) && eval(e->gete2()); }
 		void visit(Or_expr *e) { r = eval(e->gete1()) | eval(e->gete2()); }
+		void visit(OrElse_expr *e) { r = eval(e->gete1()) || eval(e->gete2()); }
 		void visit(Xor_expr *e) { r = eval(e->gete1()) ^ eval(e->gete2()); }
 		void visit(Not_expr *e) { r = !eval(e->gete1()); }
 		void visit(Cond_expr *e) { r = eval(e->gete1()) ? eval(e->gete2()) : eval(e->gete3()); }

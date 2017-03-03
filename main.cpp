@@ -18,7 +18,25 @@ int main()
         std::cout << " == " << eval(E) << "\n";
     }
     {
+        Expr *E = new AndThen_expr (
+            new Bool_expr(true),
+            new Bool_expr(true)
+        );
+        assert(check(cxt, E));
+        print(E);
+        std::cout << " == " << eval(E) << "\n";
+    }
+    {
         Expr *E = new Or_expr(
+            new Bool_expr(true),
+            new Bool_expr(false)
+        );
+        assert(check(cxt, E));
+        print(E);
+        std::cout << " == " << eval(E) << "\n";
+    }
+    {
+        Expr *E = new OrElse_expr(
             new Bool_expr(true),
             new Bool_expr(false)
         );

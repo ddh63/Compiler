@@ -8,7 +8,9 @@ class Int_type;
 
 class Bool_expr;
 class And_expr;
+class AndThen_expr;
 class Or_expr;
+class OrElse_expr;
 class Xor_expr;
 class Not_expr;
 class Cond_expr;
@@ -48,7 +50,9 @@ class Expr {
 struct Expr::Visitor {
 	virtual void visit(Bool_expr*) = 0;
 	virtual void visit(And_expr*) = 0;
+	virtual void visit(AndThen_expr*) = 0;
 	virtual void visit(Or_expr*) = 0;
+	virtual void visit(OrElse_expr*) = 0;
 	virtual void visit(Xor_expr*) = 0;
 	virtual void visit(Not_expr*) = 0;
 	virtual void visit(Cond_expr*) = 0;
@@ -87,12 +91,34 @@ class And_expr : public Expr {
 	void accept(Visitor& v) { return v.visit(this); }
 };
 
+class AndThen_expr : public Expr {
+	Expr *e1;
+	Expr *e2;
+
+	public:
+	AndThen_expr(Expr *e1, Expr *e2) : e1(e1), e2(e2) {}
+	Expr* gete1() { return e1; }
+	Expr* gete2() { return e2; }
+	void accept(Visitor& v) { return v.visit(this); }
+};
+
 class Or_expr : public Expr {
 	Expr *e1;
 	Expr *e2;
 
 	public:
 	Or_expr(Expr *e1, Expr *e2) : e1(e1), e2(e2) {}
+	Expr* gete1() { return e1; }
+	Expr* gete2() { return e2; }
+	void accept(Visitor& v) { return v.visit(this); }
+};
+
+class OrElse_expr : public Expr {
+	Expr *e1;
+	Expr *e2;
+
+	public:
+	OrElse_expr(Expr *e1, Expr *e2) : e1(e1), e2(e2) {}
 	Expr* gete1() { return e1; }
 	Expr* gete2() { return e2; }
 	void accept(Visitor& v) { return v.visit(this); }

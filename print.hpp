@@ -8,7 +8,9 @@ bool needs_parens(Expr *e) {
 		bool r;
 		void visit(Bool_expr *e) { r = false; }
 	    void visit(And_expr *e) { r = true; }
+	    void visit(AndThen_expr *e) { r = true; }
 	    void visit(Or_expr *e) { r = true; }
+	    void visit(OrElse_expr *e) { r = true; }
 	    void visit(Xor_expr *e) { r = true; }
 	    void visit(Not_expr *e) { r = true; }
 	    void visit(Cond_expr *e) { r = true; }
@@ -54,9 +56,19 @@ void print(Expr *e) {
 			std::cout << " & ";
 			print_enclosed(e->gete2());
 		}
+		void visit(AndThen_expr *e) {
+			print_enclosed(e->gete1());
+			std::cout << " && ";
+			print_enclosed(e->gete2());
+		}
 		void visit(Or_expr *e) {
 			print_enclosed(e->gete1());
 			std::cout << " | ";
+			print_enclosed(e->gete2());
+		}
+		void visit(OrElse_expr *e) {
+			print_enclosed(e->gete1());
+			std::cout << " || ";
 			print_enclosed(e->gete2());
 		}
 		void visit(Xor_expr *e) {
