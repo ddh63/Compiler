@@ -40,7 +40,7 @@ Type* check(Context& cxt, Expr* e) {
             // Check if e2 and e3 are same type
             assert(check(cxt, e->gete1()) == &cxt.bool_type && "Expression not of type bool");
             assert(check(cxt, e->gete2()) == check(cxt, e->gete3()) && "Expression 2 and 3 must have same type");
-            t = &cxt.bool_type;
+            t = check(cxt, e->gete2());
         }
         void visit(Int_expr* e) {
             t = &cxt.int_type;
