@@ -2,6 +2,7 @@
 #define TOKEN_HPP
 
 enum token_kind {
+    EOF_tok,
     Plus_tok,
     Minus_tok,
     Star_tok,       // Mult
@@ -31,21 +32,26 @@ class Token {
 	public:
     Token(int name) : name(name) {}
     int getName() { return name; }
+    virtual int getVal() = 0;
 	virtual ~Token() = default;
 };
 
 class Punc_token : public Token {
     public:
     Punc_token(int name) : Token(name) {}
+    int getVal() { return getName(); }
 };
 
 class Bool_token : public Token {
+    public:
     bool val;
+    int getVal() { return val; }
 };
 
 class Int_token : public Token {
     public:
     int val;
+    int getVal() { return val; }
     Int_token(int name, int val) : Token(name), val(val) {}
 };
 

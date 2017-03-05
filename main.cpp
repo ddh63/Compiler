@@ -11,9 +11,11 @@ int main()
     //Punc_token *punc = new Punc_token(LParen_tok);
     //std::cout << punc->getName() << "\n";
 
-    Lexer *lex = new Lexer("*");
-    Token* t = lex->next();
-    std::cout << t->getName() << "\n";
+    Lexer *lex = new Lexer("100 > 90");
+    while(Token* t = lex->next()) {
+        if (t->getName() == EOF_tok) break;
+        std::cout << t->getVal() << "\n";
+    }
 
     /*
     Context cxt;
