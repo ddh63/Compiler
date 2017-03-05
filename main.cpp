@@ -4,11 +4,14 @@
 #include "print.hpp"
 #include "type.hpp"
 #include "token.hpp"
+#include "lexer.hpp"
 
 int main()
 {
+    //Punc_token *punc = new Punc_token(LParen_tok);
+    //std::cout << punc->getName() << "\n";
 
-
+    Lexer *lex = new Lexer();
     /*
     Context cxt;
 

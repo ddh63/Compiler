@@ -29,10 +29,15 @@ class Token {
     int name;
 
 	public:
+    Token(int name) : name(name) {}
+    int getName() { return name; }
 	virtual ~Token() = default;
 };
 
-class Punc_token : public Token {};
+class Punc_token : public Token {
+    public:
+    Punc_token(int name) : Token(name) {}
+};
 
 class Bool_token : public Token {
     bool val;
