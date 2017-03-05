@@ -11,7 +11,10 @@ int main()
     //Punc_token *punc = new Punc_token(LParen_tok);
     //std::cout << punc->getName() << "\n";
 
-    Lexer *lex = new Lexer();
+    Lexer *lex = new Lexer("*");
+    Token* t = lex->next();
+    std::cout << t->getName() << "\n";
+
     /*
     Context cxt;
 

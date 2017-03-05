@@ -34,6 +34,7 @@
 		</Compiler>
 		<Unit filename="ast.hpp" />
 		<Unit filename="eval.hpp" />
+		<Unit filename="lexer.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="print.hpp" />
 		<Unit filename="token.hpp" />

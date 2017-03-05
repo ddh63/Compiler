@@ -44,7 +44,9 @@ class Bool_token : public Token {
 };
 
 class Int_token : public Token {
+    public:
     int val;
+    Int_token(int name, int val) : Token(name), val(val) {}
 };
 
 #endif // TOKEN_HPP
