@@ -6,15 +6,22 @@
 #include "token.hpp"
 #include "lexer.hpp"
 
+#include <vector>
+
 int main()
 {
     //Punc_token *punc = new Punc_token(LParen_tok);
     //std::cout << punc->getName() << "\n";
 
     Lexer *lex = new Lexer("100 > 90");
+    std::vector<Token*> tokens;
     while(Token* t = lex->next()) {
+        tokens.emplace_back(t);
         if (t->getName() == EOF_tok) break;
-        std::cout << t->getVal() << "\n";
+    }
+
+    for (Token* token : tokens) {
+        std::cout << token->getName() << "\n";
     }
 
     /*
