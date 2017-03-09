@@ -11,14 +11,18 @@
 int main()
 {
     std::string input;
+    std::string con;
     std::vector<Token*> tokens;
     while(!std::cin.eof()) {
-        std::getline(std::cin, input);
-        Lexer *lex = new Lexer(input);
-        while(Token* t = lex->next()) {
-            tokens.push_back(t);
-            if (t->getName() == EOF_tok) break;
-        }
+        std::getline(std::cin, con);
+        input += con;
+        input += '\n';
+    }
+
+    Lexer *lex = new Lexer(input);
+    while(Token* t = lex->next()) {
+        tokens.push_back(t);
+        if (t->getName() == EOF_tok) break;
     }
 
     std::cout << "Token types:\n";
