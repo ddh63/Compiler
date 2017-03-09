@@ -139,9 +139,45 @@ Token* Lexer::next() {
                 int n = std::atoi(buf.c_str());
                 return new Int_token(Int_tok, n);
             }
+            case 't': {
+                consume();
+                if (lookahead() == 'r') {
+                    consume();
+                    if (lookahead() == 'u') {
+                        consume();
+                        if (lookahead() == 'e') {
+                            consume();
+                            return new Bool_token(Bool_tok, true);
+                        }
+                    }
+                }
+                else {
+                    assert(false && "Unknown string");
+                }
+            }
+            case 'f': {
+                consume();
+                if (lookahead() == 'a') {
+                    consume();
+                    if (lookahead() == 'l') {
+                        consume();
+                        if (lookahead() == 's') {
+                            consume();
+                            if (lookahead() == 'e') {
+                                consume();
+                                return new Bool_token(Bool_tok, false);
+                            }
+                        }
+                    }
+                }
+                else {
+                    assert(false && "Unknown string");
+                }
+            }
             case ' ':
             case '\n':
             case '\t': ignore(); continue;
+            default: assert(false && "Unknown value");
         }
     }
     return new Punc_token(EOF_tok);

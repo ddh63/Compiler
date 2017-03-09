@@ -23,36 +23,38 @@ enum token_kind {
     Colon_tok,
     LParen_tok,
     RParen_tok,
-    Int_tok
+    Int_tok,
+    Bool_tok
 };
 
 class Token {
-    int name;
+    token_kind name;
 
 	public:
-    Token(int name) : name(name) {}
-    int getName() { return name; }
+    Token(token_kind name) : name(name) {}
+    token_kind getName() { return name; }
     virtual int getVal() = 0;
 	virtual ~Token() = default;
 };
 
 class Punc_token : public Token {
     public:
-    Punc_token(int name) : Token(name) {}
-    int getVal() { return getName(); }
+    int getVal() { return 0; }
+    Punc_token(token_kind name) : Token(name) {}
 };
 
 class Bool_token : public Token {
     public:
-    bool val;
+    int val;
     int getVal() { return val; }
+    Bool_token(token_kind name, bool val) : Token(name), val(val) {}
 };
 
 class Int_token : public Token {
     public:
     int val;
     int getVal() { return val; }
-    Int_token(int name, int val) : Token(name), val(val) {}
+    Int_token(token_kind name, int val) : Token(name), val(val) {}
 };
 
 #endif // TOKEN_HPP

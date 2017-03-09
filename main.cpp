@@ -10,18 +10,23 @@
 
 int main()
 {
-    //Punc_token *punc = new Punc_token(LParen_tok);
-    //std::cout << punc->getName() << "\n";
+    std::string input;
+    std::cout << "Input string: ";
+    std::getline(std::cin, input);
 
-    Lexer *lex = new Lexer("100 > 90");
+    Lexer *lex = new Lexer(input);
     std::vector<Token*> tokens;
     while(Token* t = lex->next()) {
-        tokens.emplace_back(t);
+        tokens.push_back(t);
         if (t->getName() == EOF_tok) break;
     }
 
+    std::cout << "Token types:\n";
     for (Token* token : tokens) {
-        std::cout << token->getName() << "\n";
+        std::cout << token->getName();
+        if (token->getName() == 21 || token->getName() == 22)
+            std::cout << "\tValue: " << token->getVal();
+        std::cout << "\n";
     }
 
     /*
