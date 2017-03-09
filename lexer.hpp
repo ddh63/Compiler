@@ -14,8 +14,13 @@ class Lexer {
     std::string buf;
 
     Lexer(std::string str) : str(str) {
-        first = &str.at(loc);
-        last = &str[str.size()];
+        if (str.size() != 0) {
+            first = &str.at(loc);
+            last = &str[str.size()];
+        }
+        else {
+            EOF = true;
+        }
     }
 
     char lookahead() const {
