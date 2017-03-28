@@ -30,9 +30,28 @@ class Parser {
 
         Token* t = tokens.front();
         tokens.erase(tokens.begin());
-
         return t;
     }
+
+    Token* require(token_kind tk) {
+        assert(lookahead() == tk);
+        return consume();
+    }
+
+    Token* match(token_kind tk) {
+        if (lookahead() == tk)
+            return consume();
+        else
+            throw std::runtime_error("Expected token kind " + tk);
+    }
+
+    Token* match_if(token_kind tk) {
+        if (lookahead() == tk)
+            return consume();
+        else
+            return nullptr;
+    }
+
 };
 
 #endif // PARSER_HPP
