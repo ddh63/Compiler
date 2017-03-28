@@ -6,6 +6,7 @@
 #include "token.hpp"
 #include "lexer.hpp"
 #include "symbols.hpp"
+#include "parser.hpp"
 
 #include <vector>
 
@@ -18,11 +19,11 @@ int main()
     std::string input;
     std::string con;
     std::vector<Token*> tokens;
-    //while(!std::cin.eof()) {
+    while(!std::cin.eof()) {
         std::getline(std::cin, con);
         input += con;
         input += '\n';
-    //}
+    }
 
     Lexer *lex = new Lexer(kws, syms, input);
     while(Token* t = lex->next()) {
@@ -30,10 +31,19 @@ int main()
         if (t->getName() == EOF_tok) break;
     }
 
+    /*
     std::cout << "Token types:\n";
     for (Token* token : tokens) {
         std::cout << token->getName();
         std::cout << "\n";
+    }
+    */
+
+    Parser *p = new Parser(tokens);
+    std::cout << "Parser Lookahead\n";
+    while (token_kind tk = p->lookahead()) {
+        std::cout << tk << "\n";
+        p->consume();
     }
 
     /*
