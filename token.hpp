@@ -1,6 +1,9 @@
 #ifndef TOKEN_HPP
 #define TOKEN_HPP
 
+#include <string>
+#include <unordered_map>
+
 enum token_kind {
     EOF_tok,
     Plus_tok,
@@ -24,7 +27,22 @@ enum token_kind {
     LParen_tok,
     RParen_tok,
     Int_tok,
-    Bool_tok
+    Bool_tok,
+
+    Bool_kw,
+    Int_kw,
+    True_kw,
+    False_kw,
+};
+
+class Keyword_table : public std::unordered_map<std::string, token_kind> {
+    public:
+    Keyword_table() {
+        insert({"bool", Bool_kw});
+        insert({"int", Int_kw});
+        insert({"true", True_kw});
+        insert({"false", False_kw});
+    }
 };
 
 class Token {
@@ -33,26 +51,26 @@ class Token {
 	public:
     Token(token_kind name) : name(name) {}
     token_kind getName() { return name; }
-    virtual int getVal() = 0;
 	virtual ~Token() = default;
 };
 
 class Punc_token : public Token {
     public:
-    int getVal() { return 0; }
     Punc_token(token_kind name) : Token(name) {}
 };
 
 class Bool_token : public Token {
+    bool val;
+
     public:
-    int val;
-    int getVal() { return val; }
+    bool getVal() { return val; };
     Bool_token(token_kind name, bool val) : Token(name), val(val) {}
 };
 
 class Int_token : public Token {
-    public:
     int val;
+
+    public:
     int getVal() { return val; }
     Int_token(token_kind name, int val) : Token(name), val(val) {}
 };

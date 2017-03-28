@@ -5,21 +5,26 @@
 #include "type.hpp"
 #include "token.hpp"
 #include "lexer.hpp"
+#include "symbols.hpp"
 
 #include <vector>
+
+Keyword_table kws;
+Symbol_table syms;
+Context cxt;
 
 int main()
 {
     std::string input;
     std::string con;
     std::vector<Token*> tokens;
-    while(!std::cin.eof()) {
+    //while(!std::cin.eof()) {
         std::getline(std::cin, con);
         input += con;
         input += '\n';
-    }
+    //}
 
-    Lexer *lex = new Lexer(input);
+    Lexer *lex = new Lexer(kws, syms, input);
     while(Token* t = lex->next()) {
         tokens.push_back(t);
         if (t->getName() == EOF_tok) break;
@@ -28,14 +33,10 @@ int main()
     std::cout << "Token types:\n";
     for (Token* token : tokens) {
         std::cout << token->getName();
-        if (token->getName() == 21 || token->getName() == 22)
-            std::cout << "\tValue: " << token->getVal();
         std::cout << "\n";
     }
 
     /*
-    Context cxt;
-
     {
         Expr *E = new And_expr (
             new Bool_expr(true),

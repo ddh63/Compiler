@@ -4,51 +4,65 @@
 #include <string>
 #include <cstdlib>
 #include "token.hpp"
+#include "symbols.hpp"
 
 class Lexer {
-    public:
     std::string str;
-    unsigned int loc = 0;
-    bool EOF = false;
     char *first, *last;
     std::string buf;
+    const Keyword_table* kwt;
+    Symbol_table* st;
 
-    Lexer(std::string str) : str(str) {
-        if (str.size() != 0) {
-            first = &str.at(loc);
-            last = &str[str.size()];
-        }
-        else {
-            EOF = true;
-        }
+    public:
+    Lexer(const Keyword_table& kwt, Symbol_table& st, std::string& str) : str(str), kwt(&kwt), st(&st) {
+        first = &str[0];
+        last = &str[0] + str.size();
     }
 
-    char lookahead() const {
-        if (EOF)
-            return 0;
-        else
-            return *first;
-    }
+    EOF() const { return first == last; }
+
+    char lookahead() const { return EOF() ? 0 : *first; }
 
     char consume() {
-        if (EOF)
+        if (EOF())
             return 0;
-        buf += *first;
-        if (loc < str.size() - 1)
-            first = &str.at(++loc);
-        else
-            EOF = true;
-        return buf.back();
+        char c = *first++;
+        buf.push_back(c);
+        return c;
     }
 
-    char ignore() {
-        if (loc < str.size() - 1) {
-            first = &str.at(++loc);
-            return *first;
-        }
-        else {
-            EOF = true;
-            return 0;
+    void ignore() { first++; }
+
+    bool is_digit(char c) { return std::isdigit(c); }
+    bool is_letter(char c) { return std::isalpha(c) || c == '_'; }
+    bool is_letter_or_digit(char c) { return is_letter(c) || is_digit(c); }
+
+    Token* integer() {
+        assert(is_digit(lookahead()));
+
+        consume();
+        while (!EOF() && is_digit(lookahead()))
+            consume();
+        int n = std::atoi(buf.c_str());
+        return new Int_token(Int_tok, n);
+    }
+
+    Token* word() {
+        assert(is_letter(lookahead()));
+
+        consume();
+        while (!EOF() && is_letter_or_digit(lookahead()))
+            consume();
+
+        kwt->find(buf);
+        auto i = kwt->find(buf);
+        if (i != kwt->end()) {
+            if (i->second == True_kw)
+                return new Bool_token(Bool_tok, true);
+            if (i->second == False_kw)
+                return new Bool_token(Bool_tok, false);
+
+            return new Token(i->second);
         }
     }
 
@@ -56,18 +70,21 @@ class Lexer {
 };
 
 Token* Lexer::next() {
-    while (!EOF) {
+    while (!EOF()) {
         buf.clear();
         switch (lookahead()) {
-            case '+': consume(); return new Punc_token(Plus_tok);
-            case '-': consume(); return new Punc_token(Minus_tok);
-            case '*': consume(); return new Punc_token(Star_tok);
-            case '/': consume(); return new Punc_token(Slash_tok);
-            case '%': consume(); return new Punc_token(Percent_tok);
+            case ' ':
+            case '\n':
+            case '\t': ignore(); continue;
+            case '+': ignore(); return new Punc_token(Plus_tok);
+            case '-': ignore(); return new Punc_token(Minus_tok);
+            case '*': ignore(); return new Punc_token(Star_tok);
+            case '/': ignore(); return new Punc_token(Slash_tok);
+            case '%': ignore(); return new Punc_token(Percent_tok);
             case '&': {
-                consume();
-                if (!EOF && lookahead() == '&') {
-                    consume();
+                ignore();
+                if (!EOF() && lookahead() == '&') {
+                    ignore();
                     return new Punc_token(LogAmp_tok);
                 }
                 else {
@@ -75,9 +92,9 @@ Token* Lexer::next() {
                 }
             }
             case '|': {
-                consume();
-                if (!EOF && lookahead() == '|') {
-                    consume();
+                ignore();
+                if (!EOF() && lookahead() == '|') {
+                    ignore();
                     return new Punc_token(LogPipe_tok);
                 }
                 else {
@@ -85,9 +102,9 @@ Token* Lexer::next() {
                 }
             }
             case '!': {
-                consume();
-                if (!EOF && lookahead() == '=') {
-                    consume();
+                ignore();
+                if (!EOF() && lookahead() == '=') {
+                    ignore();
                     return new Punc_token(NotEqual_tok);
                 }
                 else {
@@ -95,9 +112,9 @@ Token* Lexer::next() {
                 }
             }
             case '=': {
-                consume();
-                if (!EOF && lookahead() == '=') {
-                    consume();
+                ignore();
+                if (!EOF() && lookahead() == '=') {
+                    ignore();
                     return new Punc_token(Equal_tok);
                 }
                 else {
@@ -105,9 +122,9 @@ Token* Lexer::next() {
                 }
             }
             case '<': {
-                consume();
-                if (!EOF && lookahead() == '=') {
-                    consume();
+                ignore();
+                if (!EOF() && lookahead() == '=') {
+                    ignore();
                     return new Punc_token(Le_tok);
                 }
                 else {
@@ -115,74 +132,27 @@ Token* Lexer::next() {
                 }
             }
             case '>': {
-                consume();
-                if (!EOF && lookahead() == '=') {
-                    consume();
+                ignore();
+                if (!EOF() && lookahead() == '=') {
+                    ignore();
                     return new Punc_token(Ge_tok);
                 }
                 else {
                     return new Punc_token(Gt_tok);
                 }
             }
-            case '?': consume(); return new Punc_token(Question_tok);
-            case ':': consume(); return new Punc_token(Colon_tok);
-            case '(': consume(); return new Punc_token(LParen_tok);
-            case ')': consume(); return new Punc_token(RParen_tok);
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9': {
-                consume();
-                while (!EOF && std::isdigit(lookahead()))
-                    consume();
-                int n = std::atoi(buf.c_str());
-                return new Int_token(Int_tok, n);
+            case '?': ignore(); return new Punc_token(Question_tok);
+            case ':': ignore(); return new Punc_token(Colon_tok);
+            case '(': ignore(); return new Punc_token(LParen_tok);
+            case ')': ignore(); return new Punc_token(RParen_tok);
+            default: {
+                if (is_digit(lookahead()))
+                    return integer();
+                else if (is_letter(lookahead()))
+                    return word();
+                else
+                    throw std::runtime_error("Invalid character");
             }
-            case 't': {
-                consume();
-                if (lookahead() == 'r') {
-                    consume();
-                    if (lookahead() == 'u') {
-                        consume();
-                        if (lookahead() == 'e') {
-                            consume();
-                            return new Bool_token(Bool_tok, true);
-                        }
-                    }
-                }
-                else {
-                    assert(false && "Unknown string");
-                }
-            }
-            case 'f': {
-                consume();
-                if (lookahead() == 'a') {
-                    consume();
-                    if (lookahead() == 'l') {
-                        consume();
-                        if (lookahead() == 's') {
-                            consume();
-                            if (lookahead() == 'e') {
-                                consume();
-                                return new Bool_token(Bool_tok, false);
-                            }
-                        }
-                    }
-                }
-                else {
-                    assert(false && "Unknown string");
-                }
-            }
-            case ' ':
-            case '\n':
-            case '\t': ignore(); continue;
-            default: assert(false && "Unknown value");
         }
     }
     return new Punc_token(EOF_tok);
