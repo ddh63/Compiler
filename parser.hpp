@@ -2,6 +2,7 @@
 #define PARSER_HPP
 
 #include "token.hpp"
+#include "translator.hpp"
 
 #include <vector>
 
@@ -9,7 +10,9 @@ class Parser {
     std::vector<Token*> tokens;
 
     public:
-    Parser(std::vector<Token*> t) : tokens(t) {}
+    Parser(std::vector<Token*> t, Context& cxt) : tokens(t), tran(cxt) {}
+
+    Translator tran;
 
     bool EOF() { return tokens.empty(); }
 
@@ -50,6 +53,75 @@ class Parser {
             return consume();
         else
             return nullptr;
+    }
+
+    Expr* expression() {
+        return additiveExpression();
+    }
+
+    Expr* additiveExpression() {
+        Expr *e1 = multiplicativeExpression();
+        while (true) {
+            if (match_if(Plus_tok)) {
+                Expr *e2 = multiplicativeExpression();
+                e1 = tran.onAdd(e1, e2);
+            }
+            else if (match_if(Minus_tok)) {
+                Expr *e2 = multiplicativeExpression();
+                e1 = tran.onSub(e1, e2);
+            }
+            else
+                break;
+        }
+        return e1;
+    }
+
+    Expr* multiplicativeExpression() {
+        Expr *e1 = unaryExpression();
+        while (true) {
+            if (match_if(Star_tok)) {
+                Expr *e2 = unaryExpression();
+                e1 = tran.onMul(e1, e2);
+            }
+            else if (match_if(Slash_tok)) {
+                Expr *e2 = unaryExpression();
+                e1 = tran.onDiv(e1, e2);
+            }
+            else if (match_if(Percent_tok)) {
+                Expr *e2 = unaryExpression();
+                e1 = tran.onRem(e1, e2);
+            }
+            else
+                break;
+        }
+        return e1;
+    }
+
+    Expr* unaryExpression() {
+        if (match_if(Minus_tok)) {
+            Expr *e1 = unaryExpression();
+            return tran.onNeg(e1);
+        }
+        else
+            return primaryExpression();
+    }
+
+    Expr* primaryExpression() {
+        switch (lookahead()) {
+            case True_kw: return tran.onTrue(consume());
+            case False_kw: return tran.onFalse(consume());
+            case Int_tok: return tran.onInt(consume());
+            case LParen_tok: {
+                consume();
+                Expr *e1 = expression();
+                match(RParen_tok);
+                return e1;
+            }
+            default: {
+                throw std::runtime_error("Invalid expression");
+                break;
+            }
+        }
     }
 
 };

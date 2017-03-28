@@ -19,11 +19,11 @@ int main()
     std::string input;
     std::string con;
     std::vector<Token*> tokens;
-    while(!std::cin.eof()) {
+    //while(!std::cin.eof()) {
         std::getline(std::cin, con);
         input += con;
         input += '\n';
-    }
+    //}
 
     Lexer *lex = new Lexer(kws, syms, input);
     while(Token* t = lex->next()) {
@@ -39,12 +39,10 @@ int main()
     }
     */
 
-    Parser *p = new Parser(tokens);
-    std::cout << "Parser Lookahead\n";
-    while (token_kind tk = p->lookahead()) {
-        std::cout << tk << "\n";
-        p->consume();
-    }
+    Parser *p = new Parser(tokens, cxt);
+    std::cout << "Parser\n";
+    Expr* a = p->expression();
+    print(a);
 
     /*
     {

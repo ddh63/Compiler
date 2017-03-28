@@ -42,6 +42,7 @@ class Int_type : public Type {};
 
 class Expr {
 	public:
+    Type* ty;
     struct Visitor;
 	virtual ~Expr() = default;
 	virtual void accept(Visitor&) = 0;

@@ -24,9 +24,9 @@ bool needs_parens(Expr *e) {
 	    void visit(GreaterThanEqual_expr *e) { r = true; }
 	    void visit(Add_expr *e) { r = false; }
 	    void visit(Sub_expr *e) { r = false; }
-	    void visit(Mult_expr *e) { r = false; }
-	    void visit(Div_expr *e) { r = false; }
-	    void visit(Rem_expr *e) { r = false; }
+	    void visit(Mult_expr *e) { r = true; }
+	    void visit(Div_expr *e) { r = true; }
+	    void visit(Rem_expr *e) { r = true; }
 	};
 	V vis;
 	e->accept(vis);

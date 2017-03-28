@@ -58,9 +58,9 @@ class Lexer {
         auto i = kwt->find(buf);
         if (i != kwt->end()) {
             if (i->second == True_kw)
-                return new Bool_token(Bool_tok, true);
+                return new Token(True_kw);
             if (i->second == False_kw)
-                return new Bool_token(Bool_tok, false);
+                return new Token(False_kw);
 
             return new Token(i->second);
         }

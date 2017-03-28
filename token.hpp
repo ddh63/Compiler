@@ -27,12 +27,11 @@ enum token_kind {
     LParen_tok,
     RParen_tok,
     Int_tok,
-    Bool_tok,
 
     Bool_kw,
     Int_kw,
     True_kw,
-    False_kw,
+    False_kw
 };
 
 class Keyword_table : public std::unordered_map<std::string, token_kind> {
@@ -57,14 +56,6 @@ class Token {
 class Punc_token : public Token {
     public:
     Punc_token(token_kind name) : Token(name) {}
-};
-
-class Bool_token : public Token {
-    bool val;
-
-    public:
-    bool getVal() { return val; };
-    Bool_token(token_kind name, bool val) : Token(name), val(val) {}
 };
 
 class Int_token : public Token {
