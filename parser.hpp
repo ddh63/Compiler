@@ -56,7 +56,90 @@ class Parser {
     }
 
     Expr* expression() {
-        return additiveExpression();
+        return conditionalExpression();
+    }
+
+    Expr* conditionalExpression() {
+        Expr *e1 = logicalOrExpression();
+        while (true) {
+            if (match_if(Question_tok)) {
+                Expr *e2 = expression();
+                match(Colon_tok);
+                Expr *e3 = expression();
+                e1 = tran.onCond(e1, e2, e3);
+            }
+            else
+                break;
+        }
+        return e1;
+    }
+
+    Expr* logicalOrExpression() {
+        Expr *e1 = logicalAndExpression();
+        while (true) {
+            if (match_if(LogPipe_tok)) {
+                Expr *e2 = logicalAndExpression();
+                e1 = tran.onLogOr(e1, e2);
+            }
+            else
+                break;
+        }
+        return e1;
+    }
+
+    Expr* logicalAndExpression() {
+        Expr *e1 = equalityExpression();
+        while (true) {
+            if (match_if(LogAmp_tok)) {
+                Expr *e2 = equalityExpression();
+                e1 = tran.onLogAnd(e1, e2);
+            }
+            else
+                break;
+        }
+        return e1;
+    }
+
+    Expr* equalityExpression() {
+        Expr *e1 = orderingExpression();
+        while (true) {
+            if (match_if(Equal_tok)) {
+                Expr *e2 = orderingExpression();
+                e1 = tran.onEqual(e1, e2);
+            }
+            else if (match_if(NotEqual_tok)) {
+                Expr *e2 = orderingExpression();
+                e1 = tran.onNotEqual(e1, e2);
+            }
+            else
+                break;
+        }
+        return e1;
+    }
+
+    Expr* orderingExpression() {
+        Expr *e1 = additiveExpression();
+        while (true) {
+            if (match_if(Lt_tok)) {
+                Expr *e2 = additiveExpression();
+                e1 = tran.onLt(e1, e2);
+            }
+            else if (match_if(Gt_tok)) {
+                Expr *e2 = additiveExpression();
+                e1 = tran.onGt(e1, e2);
+            }
+            else if (match_if(Le_tok)) {
+                Expr *e2 = additiveExpression();
+                e1 = tran.onLe(e1, e2);
+            }
+            else if (match_if(Ge_tok)) {
+                Expr *e2 = additiveExpression();
+                e1 = tran.onGe(e1, e2);
+            }
+            else
+                break;
+        }
+        return e1;
     }
 
     Expr* additiveExpression() {

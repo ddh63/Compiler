@@ -36,8 +36,11 @@
 		<Unit filename="eval.hpp" />
 		<Unit filename="lexer.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="parser.hpp" />
 		<Unit filename="print.hpp" />
+		<Unit filename="symbols.hpp" />
 		<Unit filename="token.hpp" />
+		<Unit filename="translator.hpp" />
 		<Unit filename="type.hpp" />
 		<Extensions>
 			<code_completion />

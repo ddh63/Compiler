@@ -40,9 +40,9 @@ int main()
     */
 
     Parser *p = new Parser(tokens, cxt);
-    std::cout << "Parser\n";
     Expr* a = p->expression();
     print(a);
+    std::cout << " == " << eval(a) << "\n";
 
     /*
     {
