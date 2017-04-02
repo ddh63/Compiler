@@ -17,19 +17,27 @@ Context cxt;
 int main()
 {
     std::string input;
-    std::string con;
+    //std::string con;
     std::vector<Token*> tokens;
-    //while(!std::cin.eof()) {
-        std::getline(std::cin, con);
-        input += con;
-        input += '\n';
-    //}
+    while(!std::cin.eof()) {
+        std::getline(std::cin, input);
+        tokens.clear();
+        Lexer *lex = new Lexer(kws, syms, input);
+        while(Token* t = lex->next()) {
+            tokens.push_back(t);
+            if (t->getName() == EOF_tok) break;
+        }
+        Parser *p = new Parser(tokens, cxt);
+        Expr* a = p->expression();
+        print(a);
+        std::cout << " == " << eval(a) << "\n";
+    }
 
-    Lexer *lex = new Lexer(kws, syms, input);
+    /*Lexer *lex = new Lexer(kws, syms, input);
     while(Token* t = lex->next()) {
         tokens.push_back(t);
         if (t->getName() == EOF_tok) break;
-    }
+    }*/
 
     /*
     std::cout << "Token types:\n";
@@ -39,10 +47,12 @@ int main()
     }
     */
 
+    /*
     Parser *p = new Parser(tokens, cxt);
     Expr* a = p->expression();
     print(a);
     std::cout << " == " << eval(a) << "\n";
+    */
 
     /*
     {
