@@ -64,6 +64,9 @@ class Lexer {
 
             return new Token(i->second);
         }
+
+        symbol* s = st->ins(buf);
+        return new Id_token(Id_tok, s);
     }
 
     Token* next();

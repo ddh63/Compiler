@@ -19,7 +19,7 @@ int main()
     std::string input;
     //std::string con;
     std::vector<Token*> tokens;
-    while(!std::cin.eof()) {
+    //while(!std::cin.eof()) {
         std::getline(std::cin, input);
         tokens.clear();
         Lexer *lex = new Lexer(kws, syms, input);
@@ -31,7 +31,7 @@ int main()
         Expr* a = p->expression();
         print(a);
         std::cout << " == " << eval(a) << "\n";
-    }
+    //}
 
     /*Lexer *lex = new Lexer(kws, syms, input);
     while(Token* t = lex->next()) {

@@ -32,8 +32,6 @@ int eval(Expr *e) {
         void visit(Sub_expr *e) {
             int a = eval(e->gete1());
             int b = eval(e->gete2());
-            // Check for overflow
-            assert((((a - b) < a) == (a > 0)) && "Subtraction overflow");
             r = a - b;
         }
         void visit(Mult_expr *e) {

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include "symbols.hpp"
 
 enum token_kind {
     EOF_tok,
@@ -27,6 +28,7 @@ enum token_kind {
     LParen_tok,
     RParen_tok,
     Int_tok,
+    Id_tok,
 
     Bool_kw,
     Int_kw,
@@ -64,6 +66,14 @@ class Int_token : public Token {
     public:
     int getVal() { return val; }
     Int_token(token_kind name, int val) : Token(name), val(val) {}
+};
+
+class Id_token : public Token {
+    symbol* sym;
+
+    public:
+    std::string getSymbol() { return *sym; }
+    Id_token(token_kind name, symbol* s) : Token(name), sym(s) {}
 };
 
 #endif // TOKEN_HPP

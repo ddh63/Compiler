@@ -4,16 +4,18 @@
 #include <string>
 #include <unordered_map>
 
+using symbol = const std::string;
+
 class Symbol_table {
     std::unordered_map<std::string, void*> symbols;
 
     public:
-    const std::string* ins(const std::string& s) {
+    symbol* ins(const std::string& s) {
         auto res = symbols.insert({s, nullptr});
         return &res.first->first;
     }
 
-    const std::string* find(const std::string& s) {
+    symbol* find(const std::string& s) {
         auto i = symbols.find(s);
         return &i->first;
     }
