@@ -12,6 +12,7 @@ enum token_kind {
     Star_tok,       // Mult
     Slash_tok,      // Div
     Percent_tok,    // Mod
+    Caret_tok,
     Amp_tok,
     LogAmp_tok,
     Pipe_tok,
@@ -27,13 +28,18 @@ enum token_kind {
     Colon_tok,
     LParen_tok,
     RParen_tok,
+    LBrace_tok,
+    RBrace_tok,
     Int_tok,
     Id_tok,
+    Assign_tok,
+    Semicolon_tok,
 
     Bool_kw,
     Int_kw,
     True_kw,
-    False_kw
+    False_kw,
+    Var_kw,
 };
 
 class Keyword_table : public std::unordered_map<std::string, token_kind> {
@@ -43,6 +49,7 @@ class Keyword_table : public std::unordered_map<std::string, token_kind> {
         insert({"int", Int_kw});
         insert({"true", True_kw});
         insert({"false", False_kw});
+        insert({"var", Var_kw});
     }
 };
 
@@ -72,7 +79,7 @@ class Id_token : public Token {
     symbol* sym;
 
     public:
-    std::string getSymbol() { return *sym; }
+    symbol* getSymbol() { return sym; }
     Id_token(token_kind name, symbol* s) : Token(name), sym(s) {}
 };
 

@@ -3,6 +3,7 @@
 
 #include "token.hpp"
 #include "translator.hpp"
+#include "stmt.hpp"
 
 #include <vector>
 
@@ -205,6 +206,70 @@ class Parser {
                 break;
             }
         }
+    }
+
+    Decl* program() {
+        std::vector<Stmt*> seq;
+        while (tokens.front()->getName() != EOF_tok) {
+            seq.push_back(statement());
+        }
+        return tran.onProgram(seq);
+    }
+
+    Stmt* statement() {
+        switch (lookahead()) {
+            case Var_kw: return declarationStatement();
+            default: return expressionStatement();
+        }
+    }
+
+    Stmt* declarationStatement() {
+        Decl* d = declaration();
+        return tran.onDeclarationStatement(d);
+    }
+
+    Stmt* expressionStatement() {
+        Expr* e = expression();
+        match(Semicolon_tok);
+        return tran.onExpressionStatement(e);
+    }
+
+    Decl* declaration() {
+        if (lookahead() == Var_kw)
+            return variableDeclaration();
+        else
+            throw std::runtime_error("Wrong declaration\n");
+    }
+
+    Decl* variableDeclaration() {
+        consume();
+
+        Type* ty = getType();
+        symbol* name = getId();
+        Decl* v = tran.onVariableDeclaration(ty, name);
+        match(Assign_tok);
+        Expr* e = expression();
+
+        tran.onVariableCreation(ty, v, e);
+        match(Semicolon_tok);
+        return v;
+    }
+
+    Type* getType() {
+        switch (lookahead()) {
+            case Bool_kw:
+                consume();
+                return tran.onBoolTy();
+            case Int_kw:
+                consume();
+                return tran.onIntTy();
+            default: throw std::runtime_error("Expected type keyword\n");
+        }
+    }
+
+    symbol* getId() {
+        Token* tok = match(Id_tok);
+        return tran.onId(tok);
     }
 
 };

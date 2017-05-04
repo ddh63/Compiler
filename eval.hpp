@@ -63,6 +63,9 @@ int eval(Expr *e) {
                 assert(false && "Mod by 0");
             r = a % b;
         }
+        void visit(Ref_expr *e) {}
+        void visit(Val_expr *e) {}
+        void visit(Assign_expr *e) {}
 	};
 
 	V vis;

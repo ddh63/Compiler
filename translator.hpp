@@ -3,11 +3,17 @@
 
 #include "ast.hpp"
 #include "symbols.hpp"
+#include "stmt.hpp"
+#include "scope.hpp"
+#include <vector>
 
 class Translator {
 
     public:
     Translator(Context& cxt) : cxt(&cxt) {}
+    Context* cxt;
+    Scope s;
+    std::unordered_map<Decl*, Expr*> mapToVal;
 
     Expr* onCond(Expr* e1, Expr* e2, Expr* e3) {
         Cond_expr* c = new Cond_expr(e1, e2, e3);
@@ -118,7 +124,46 @@ class Translator {
         return i;
     }
 
-    Context* cxt;
-};
+    Type* onBoolTy() {
+        return &cxt->bool_type;
+    }
 
+    Type* onIntTy() {
+        return &cxt->int_type;
+    }
+
+    symbol* onId(Token* t) {
+        Id_token* id = static_cast<Id_token*>(t);
+        return id->getSymbol();
+    }
+
+    Decl* onProgram(std::vector<Stmt*> s) {
+        return new Program_decl(s);
+    }
+
+    Stmt* onDeclarationStatement(Decl* d) {
+        return new Decl_stmt(d);
+    }
+
+    Stmt* onExpressionStatement(Expr* e) {
+        return new Expr_stmt(e);
+    }
+
+    Decl* onVariableDeclaration(Type* ty, symbol* name) {
+        Var_decl* v = new Var_decl(name, ty);
+        if (s.insert(name, v))
+            return v;
+        else
+            throw std::runtime_error("Variable name already in use\n");
+    }
+
+    Decl* onVariableCreation(Type* ty, Decl* d, Expr* e) {
+        Var_decl* v = static_cast<Var_decl*>(d);
+        v->ty = ty;
+        v->setVar(e);
+        mapToVal.insert({d, e});
+        return v;
+    }
+
+};
 #endif // TRANSLATOR_HPP

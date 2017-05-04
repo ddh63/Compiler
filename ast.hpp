@@ -3,6 +3,8 @@
 
 #include <cassert>
 
+class Decl;
+
 class Bool_type;
 class Int_type;
 
@@ -28,6 +30,10 @@ class Sub_expr;
 class Mult_expr;
 class Div_expr;
 class Rem_expr;
+class Val_expr;
+class Ref_expr;
+
+class Assign_expr;
 
 class Type {
 	struct Visitor;
@@ -70,6 +76,9 @@ struct Expr::Visitor {
 	virtual void visit(Mult_expr*) = 0;
 	virtual void visit(Div_expr*) = 0;
 	virtual void visit(Rem_expr*) = 0;
+	virtual void visit(Ref_expr*) = 0;
+	virtual void visit(Val_expr*) = 0;
+	virtual void visit(Assign_expr*) = 0;
 };
 
 class Bool_expr : public Expr {
@@ -294,6 +303,41 @@ class Rem_expr : public Expr {
     Rem_expr(Expr *e1, Expr *e2) : e1(e1), e2(e2) {}
     Expr* gete1() { return e1; }
     Expr* gete2() { return e2; }
+    void accept(Visitor& v) { return v.visit(this); }
+};
+
+class Val_expr : public Expr {
+    Expr* e1;
+    Expr* parent;
+
+    public:
+    Val_expr(Expr* e1) : e1(e1) {}
+    Expr* getVal() { return e1; }
+    Expr* getParent() { return parent; }
+    void setParent(Expr* e1) { parent =  e1; }
+    void accept(Visitor& v) { return v.visit(this); }
+};
+
+class Ref_expr : public Expr {
+    Decl* dec;
+    Val_expr* val;
+
+    public:
+    Ref_expr(Decl* d, Expr* e1) : dec(d), val(new Val_expr(e1)) { val->setParent(this); }
+    Decl* getDec() { return dec; }
+    Val_expr* getVal() { return val; }
+    void setVal(Expr* e1) { val = new Val_expr(e1); }
+    void accept(Visitor& v) { return v.visit(this); }
+};
+
+class Assign_expr : public Expr {
+    Ref_expr* refer;
+    Expr* e1;
+
+    public:
+    Assign_expr(Ref_expr* r, Expr* e1);
+    Ref_expr* getRef() { return refer; }
+    Expr* getVal() { return e1; }
     void accept(Visitor& v) { return v.visit(this); }
 };
 

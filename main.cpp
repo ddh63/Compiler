@@ -28,9 +28,7 @@ int main()
             if (t->getName() == EOF_tok) break;
         }
         Parser *p = new Parser(tokens, cxt);
-        Expr* a = p->expression();
-        print(a);
-        std::cout << " == " << eval(a) << "\n";
+        p->program();
     //}
 
     /*Lexer *lex = new Lexer(kws, syms, input);

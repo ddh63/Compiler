@@ -3,6 +3,7 @@
 
 #include "ast.hpp"
 #include <iostream>
+#include <stdexcept>
 
 Type* check(Context& cxt, Expr* e) {
     struct V : Expr::Visitor {
@@ -134,6 +135,30 @@ Type* check(Context& cxt, Expr* e) {
             assert(check(cxt, e->gete1()) == &cxt.int_type && "Expression 1 not of type int");
             assert(check(cxt, e->gete2()) == &cxt.int_type && "Expression 2 not of type int");
             t = &cxt.int_type;
+        }
+        void visit(Ref_expr* e) {
+            if (check(cxt, e->getVal()) == &cxt.int_type)
+                t = &cxt.int_type;
+            else if (check(cxt, e->getVal()) == &cxt.bool_type)
+                t = &cxt.bool_type;
+            else
+                throw std::runtime_error("Invalid type\n");
+        }
+        void visit(Val_expr* e) {
+            if (check(cxt, e->getVal()) == &cxt.int_type)
+                t = &cxt.int_type;
+            else if (check(cxt, e->getVal()) == &cxt.bool_type)
+                t = &cxt.bool_type;
+            else
+                throw std::runtime_error("Invalid type\n");
+        }
+        void visit(Assign_expr* e) {
+            if (check(cxt, e->getVal()) == &cxt.int_type)
+                t = &cxt.int_type;
+            else if (check(cxt, e->getVal()) == &cxt.bool_type)
+                t = &cxt.bool_type;
+            else
+                throw std::runtime_error("Invalid type\n");
         }
     };
     V vis(cxt);

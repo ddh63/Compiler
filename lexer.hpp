@@ -54,19 +54,17 @@ class Lexer {
         while (!EOF() && is_letter_or_digit(lookahead()))
             consume();
 
-        kwt->find(buf);
         auto i = kwt->find(buf);
         if (i != kwt->end()) {
-            if (i->second == True_kw)
-                return new Token(True_kw);
-            if (i->second == False_kw)
-                return new Token(False_kw);
-
-            return new Token(i->second);
+            if (i->first == "true" || i->first == "false")
+                return new Token(i->second);
+            else
+                return new Punc_token(i->second);
         }
-
-        symbol* s = st->ins(buf);
-        return new Id_token(Id_tok, s);
+        else {
+            symbol* s = st->ins(buf);
+            return new Id_token(Id_tok, s);
+        }
     }
 
     Token* next();
@@ -84,6 +82,7 @@ Token* Lexer::next() {
             case '*': ignore(); return new Punc_token(Star_tok);
             case '/': ignore(); return new Punc_token(Slash_tok);
             case '%': ignore(); return new Punc_token(Percent_tok);
+            case '^': ignore(); return new Punc_token(Caret_tok);
             case '&': {
                 ignore();
                 if (!EOF() && lookahead() == '&') {
@@ -121,7 +120,7 @@ Token* Lexer::next() {
                     return new Punc_token(Equal_tok);
                 }
                 else {
-                    assert(false && "= must have a = following it.");
+                    return new Punc_token(Assign_tok);
                 }
             }
             case '<': {
@@ -146,8 +145,11 @@ Token* Lexer::next() {
             }
             case '?': ignore(); return new Punc_token(Question_tok);
             case ':': ignore(); return new Punc_token(Colon_tok);
+            case ';': ignore(); return new Punc_token(Semicolon_tok);
             case '(': ignore(); return new Punc_token(LParen_tok);
             case ')': ignore(); return new Punc_token(RParen_tok);
+            case '{': ignore(); return new Punc_token(LBrace_tok);
+            case '}': ignore(); return new Punc_token(RBrace_tok);
             default: {
                 if (is_digit(lookahead()))
                     return integer();

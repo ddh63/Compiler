@@ -27,6 +27,9 @@ bool needs_parens(Expr *e) {
 	    void visit(Mult_expr *e) { r = true; }
 	    void visit(Div_expr *e) { r = true; }
 	    void visit(Rem_expr *e) { r = true; }
+	    void visit(Ref_expr *e) { r = false; }
+	    void visit(Val_expr *e) { r = false; }
+	    void visit(Assign_expr *e) { r = false; }
 	};
 	V vis;
 	e->accept(vis);
@@ -149,6 +152,15 @@ void print(Expr *e) {
             std::cout << " % ";
             print_enclosed(e->gete2());
 		}
+		void visit(Ref_expr *e) {
+            print_enclosed(e->getVal());
+		}
+	    void visit(Val_expr *e) {
+            print_enclosed(e->getVal());
+        }
+	    void visit(Assign_expr *e) {
+            print_enclosed(e->getVal());
+	    }
 	};
 	V vis;
 	e->accept(vis);

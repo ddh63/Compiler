@@ -33,11 +33,13 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="ast.hpp" />
+		<Unit filename="decls.hpp" />
 		<Unit filename="eval.hpp" />
 		<Unit filename="lexer.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="parser.hpp" />
 		<Unit filename="print.hpp" />
+		<Unit filename="stmt.hpp" />
 		<Unit filename="symbols.hpp" />
 		<Unit filename="token.hpp" />
 		<Unit filename="translator.hpp" />
